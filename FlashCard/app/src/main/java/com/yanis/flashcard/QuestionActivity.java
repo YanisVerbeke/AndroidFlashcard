@@ -35,6 +35,7 @@ public class QuestionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
 
+        // Get all question then randomize them and display the first
         questionList = CreateQuestions();
         Collections.shuffle(questionList);
         ResetQuestion();
@@ -46,12 +47,16 @@ public class QuestionActivity extends AppCompatActivity {
                 TextView correctAnswerTextView = findViewById(R.id.correctAnswerTextView);
                 TextView labelAnswerTextView = findViewById(R.id.labelAnswerTextView);
                 RadioGroup questionsRadioGroup = findViewById(R.id.questionsRadioGroup);
+                // If the user is choosing his answer
                 if (isAnswering) {
+                    // get the checked answer
                     RadioButton checkedAnswer = findViewById(questionsRadioGroup.getCheckedRadioButtonId());
+                    // early return
                     if (checkedAnswer == null) {
                         Toast.makeText(QuestionActivity.this, "Entrez une réponse", Toast.LENGTH_SHORT).show();
                         return;
                     }
+                    // check if the user selected the good answer
                     if (((String) checkedAnswer.getText()).equals(question.getCorrectAnswer())) {
                         correctAnswerTextView.setText("Bonne réponse !");
                         labelAnswerTextView.setText("");
@@ -60,21 +65,27 @@ public class QuestionActivity extends AppCompatActivity {
                         correctAnswerTextView.setText("Mauvaise réponse !");
                         labelAnswerTextView.setText("La bonne réponse était \"" + question.getCorrectAnswer() + "\"");
                     }
+                    // checked if it's not the last question
                     if (actualQuestion < totalQuestionNumber - 1) {
                         validateButton.setText("Question suivante");
                     } else {
                         validateButton.setText("Voir les résultats");
                     }
+                    // change mode to "next question"
                     isAnswering = false;
                 } else {
+                    // if the user already gives his answer
+                    // reset audio and the display of the answer
                     mediaPlayer.stop();
                     correctAnswerTextView.setText("");
                     labelAnswerTextView.setText("");
+                    // check if it's not the last question
                     if (actualQuestion < totalQuestionNumber - 1) {
                         actualQuestion++;
                         ResetQuestion();
                         validateButton.setText("Valider la réponse");
                     } else {
+                        // if last question, go to the result activity
                         Intent intent = new Intent(QuestionActivity.this, ResultActivity.class);
                         intent.putExtra("score", score);
                         intent.putExtra("totalQuestionNumber", totalQuestionNumber);
@@ -85,13 +96,16 @@ public class QuestionActivity extends AppCompatActivity {
         });
     }
 
+    // Modify the RadioButton with the four answer of the question
     private void CreateRadioButton(List<String> answerList) {
         RadioGroup questionRadioGroup = findViewById(R.id.questionsRadioGroup);
+        // clear the button already checked
         questionRadioGroup.clearCheck();
         RadioButton firstAnswerRadioButton = findViewById(R.id.firstAnswerRadioButton);
         RadioButton secondAnswerRadioButton = findViewById(R.id.secondAnswerRadioButton);
         RadioButton thirdAnswerRadioButton = findViewById(R.id.thirdAnswerRadioButton);
         RadioButton fourthAnswerRadioButton = findViewById(R.id.fourthAnswerRadioButton);
+        // randomize the answer's order
         Collections.shuffle(answerList);
         firstAnswerRadioButton.setText(answerList.get(0));
         secondAnswerRadioButton.setText(answerList.get(1));
@@ -99,6 +113,7 @@ public class QuestionActivity extends AppCompatActivity {
         fourthAnswerRadioButton.setText(answerList.get(3));
     }
 
+    // create the list with all the possible questions
     private List<Question> CreateQuestions() {
         List<Question> questionList = new ArrayList<>();
         questionList.add(new Question(R.raw.map_of_the_problematique, Arrays.asList("Supermassive Black Hole", "Map Of The Problematique", "Bliss", "Starlight"), "Map Of The Problematique"));
@@ -116,6 +131,7 @@ public class QuestionActivity extends AppCompatActivity {
         return questionList;
     }
 
+    // display a new question after answering to the previous
     private void ResetQuestion() {
         isAnswering = true;
         question = questionList.get(actualQuestion);

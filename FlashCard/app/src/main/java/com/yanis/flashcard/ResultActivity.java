@@ -18,13 +18,16 @@ public class ResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result);
 
+        // get the score and the number of questions from the QuestionActivity
         Intent scoreIntent = getIntent();
         score = scoreIntent.getIntExtra("score", 0);
         totalQuestionNumber = scoreIntent.getIntExtra("totalQuestionNumber", 0);
 
+        // display the score
         TextView scoreTextView = findViewById(R.id.scoreTextView);
         scoreTextView.setText(score + " / " + totalQuestionNumber);
 
+        // back to the main menu
         Button backMenuButton = findViewById(R.id.backMenuButton);
         backMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override

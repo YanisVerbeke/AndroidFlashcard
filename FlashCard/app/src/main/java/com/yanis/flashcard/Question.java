@@ -2,6 +2,7 @@ package com.yanis.flashcard;
 
 import java.util.List;
 
+// class for a single question
 public class Question {
     private int audioId;
     private List<String> answerList;
